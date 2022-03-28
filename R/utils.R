@@ -728,7 +728,7 @@ html_to_markdown <- function(html) {
     stringi::stri_write_lines(html, html_file)
     result <- tryCatch({
         format <- if (rmarkdown::pandoc_version() >= "2.0") "gfm" else "markdown_github"
-        rmarkdown::pandoc_convert(html_file, to = format, output = md_file)
+        rmarkdown::pandoc_convert(html_file, to = format, output = md_file, options = c("--lua-filter", system.file(package = "languageserver", "lua/html-to-markdown.lua")))
         paste0(stringi::stri_read_lines(md_file, encoding = "utf-8"), collapse = "\n")
     }, error = function(e) {
         logger$info("html_to_markdown failed: ", conditionMessage(e))
